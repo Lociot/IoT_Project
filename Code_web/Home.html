@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality</title>
+    <link rel="icon" href="logo.png">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js"></script>
+</head>
+
+<body>
+    <header class="header">
+        <button class="toggle-btn" onclick="toggleNav()">☰</button>
+        <a href="Home.html"><img src="logo.png" alt="Logo"></a>
+        <p>GIÁM SÁT CHẤT LƯỢNG KHÔNG KHÍ</p>
+    </header>
+    <div class="sidebar" id="sidebar">
+        <a class="nav-link active" data-target="Home"><i class="fas fa-home"></i>Trang chủ</a>
+        <a class="nav-link" data-target="HRroom"><i class="fa fa-users"></i>Phòng HR</a>
+        <a class="nav-link" data-target="ITroom"><i class="fa fa-desktop"></i>Phòng IT</a>
+        <a class="nav-link" data-target="Marketingroom"><i class="fa fa-dollar-sign"></i>Phòng Marketing</a>
+        <a class="nav-link" data-target="Information"><i class="fa fa-mobile-alt"></i>Liên hệ</a>
+    </div>
+    <div class="content" id="main-content">
+        <div class="navbar" id="Home">
+            <div class="home-background">
+                <div class="background-overlay">
+                    <h2>Chào mừng đến với hệ thống giám sát chất lượng không khí!</h2>
+                    <p>Theo dõi và quản lý các yếu tố môi trường một cách chính xác và hiệu quả.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navbar" id="HRroom">
+            <div class="grid">
+            <div class="item" style="margin: 20px;">
+                    <h1>CẢM BIẾN</h1>
+                    <div class="clearfix al-center">
+                        <div class="boxview" id="HR-tempCard" style="cursor: pointer; ">
+                            <h3>Nhiệt độ</h3>
+                            <img id="HR-Temp-img-1" src="nhietdo.png">
+                            <p id="HR-Temp-1"></p>
+                        </div>
+        
+                        <div class="boxview" id="HR-humidityCard" style="cursor: pointer; ">
+                            <h3>Độ ẩm</h3>
+                            <img id="HR-Humi-img-1" src="doam.png">
+                            <p id="HR-Humi-1"></p>
+                        </div>
+        
+                        <div class="boxview" id="HR-dustCard" style="cursor: pointer; ">
+                            <h3>Bụi mịn</h3>
+                            <img id="HR-Dust-img-1" src="buimin.png">
+                            <p id="HR-Dust-1"></p>
+                        </div>
+        
+                        <div class="boxview" id="HR-co2Card" style="cursor: pointer; ">
+                            <h3>Khí CO2</h3>
+                            <img id="HR-CO2-img-1" src="co2.png">
+                            <p id="HR-CO2-1"></p>
+                        </div>
+                    </div>
+            </div>
+            <div class="item">
+                <h1>BIỂU ĐỒ</h1>
+                <div class="HRcharts">
+                    <div class="HR-chart-wrapper" id="HR-tempChartContainer" style="display: none;">
+                        <canvas id="HR-tempChart"></canvas>
+                    </div>
+                    <div class="HR-chart-wrapper" id="HR-humiChartContainer" style="display: none;">
+                        <canvas id="HR-humiChart"></canvas>
+                    </div>
+                    <div class="HR-chart-wrapper" id="HR-co2ChartContainer" style="display: none;">
+                        <canvas id="HR-co2Chart"></canvas>
+                    </div>
+                    <div class="HR-chart-wrapper" id="HR-dustChartContainer" style="display: none;">
+                        <canvas id="HR-dustChart"></canvas>
+                    </div>
+                </div>
+            </div> 
+        </div>
+            <div class="grid item" style="grid-template-columns: 1fr;">
+                <h1>THIẾT BỊ</h1>
+                <div class="al-center">
+                    <div class="device-box">
+                        <h2>Máy lạnh</h2>
+                        <img src="aircond_off.png" alt="Hình thiết bị 1 - Tắt" id="HR-OFF-1">
+                        <img src="aircond_on.png" alt="Hình thiết bị 1 - Bật" id="HR-ON-1" style="display: none;">
+                        <label class="switch">
+                            <input type="checkbox" id="HR-SWITCH-1">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="device-box">
+                        <h2>Đèn</h2>
+                        <img src="light_off.png" alt="Hình thiết bị 2 - Tắt" id="HR-OFF-2">
+                        <img src="light_on.png" alt="Hình thiết bị 2 - Bật" id="HR-ON-2" style="display: none;">
+                        <label class="switch">
+                            <input type="checkbox" id="HR-SWITCH-2">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="device-box">
+                        <h2>Máy lọc không khí</h2>
+                        <img src="airfilter_off.png" alt="Hình thiết bị 3 - Tắt" id="HR-OFF-3">
+                        <img src="airfilter_on.png" alt="Hình thiết bị 3 - Bật" id="HR-ON-3" style="display: none;">
+                        <label class="switch">
+                            <input type="checkbox" id="HR-SWITCH-3">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="device-box">
+                        <h2>Quạt</h2>
+                        <img src="fan_off.png" alt="Hình thiết bị 4 - Tắt" id="HR-OFF-4">
+                        <img src="fan_on.png" alt="Hình thiết bị 4 - Bật" id="HR-ON-4" style="display: none;">
+                        <label class="switch">
+                            <input type="checkbox" id="HR-SWITCH-4">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <div class="navbar" id="ITroom">
+        <div class="grid">
+            <div class="item" style="margin: 20px;">
+                <h1>CẢM BIẾN</h1>
+                <div class="clearfix al-center">
+                    <div class="boxview" id="IT-tempCard" style="cursor: pointer; ">
+                        <h3>Nhiệt độ</h3>
+                        <img id="IT-Temp-img-1" src="nhietdo.png">
+                        <p id="IT-Temp-1"></p>
+                    </div>
+    
+                    <div class="boxview" id="IT-humidityCard" style="cursor: pointer; ">
+                        <h3>Độ ẩm</h3>
+                        <img id="IT-Humi-img-1" src="doam.png">
+                        <p id="IT-Humi-1"></p>
+                    </div>
+    
+                    <div class="boxview" id="IT-dustCard" style="cursor: pointer; ">
+                        <h3>Bụi mịn</h3>
+                        <img id="IT-Dust-img-1" src="buimin.png">
+                        <p id="IT-Dust-1"></p>
+                    </div>
+    
+                    <div class="boxview" id="IT-co2Card" style="cursor: pointer; ">
+                        <h3>Khí CO2</h3>
+                        <img id="IT-CO2-img-1" src="co2.png">
+                        <p id="IT-CO2-1"></p>
+                    </div>
+                </div>
+            </div>
+                <div class="item">
+                    <h1>BIỂU ĐỒ</h1>
+                    <div class="ITcharts">
+                        <div class="IT-chart-wrapper" id="IT-tempChartContainer" style="display: none;">
+                            <canvas id="IT-tempChart"></canvas>
+                        </div>
+                        <div class="IT-chart-wrapper" id="IT-humiChartContainer" style="display: none;">
+                            <canvas id="IT-humiChart"></canvas>
+                        </div>
+                        <div class="IT-chart-wrapper" id="IT-co2ChartContainer" style="display: none;">
+                            <canvas id="IT-co2Chart"></canvas>
+                        </div>
+                        <div class="IT-chart-wrapper" id="IT-dustChartContainer" style="display: none;">
+                            <canvas id="IT-dustChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+        </div>   
+        <div class="grid item" style="grid-template-columns: 1fr;">
+            <h1>THIẾT BỊ</h1>
+            <div class="al-center">
+                <div class="device-box">
+                    <h2>Máy lạnh</h2>
+                    <img src="aircond_off.png" alt="Hình thiết bị 1 - Tắt" id="IT-OFF-1">
+                    <img src="aircond_on.png" alt="Hình thiết bị 1 - Bật" id="IT-ON-1" style="display: none;">
+                    <label class="switch">
+                        <input type="checkbox" id="IT-SWITCH-1">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="device-box">
+                    <h2>Đèn</h2>
+                    <img src="light_off.png" alt="Hình thiết bị 2 - Tắt" id="IT-OFF-2">
+                    <img src="light_on.png" alt="Hình thiết bị 2 - Bật" id="IT-ON-2" style="display: none;">
+                    <label class="switch">
+                        <input type="checkbox" id="IT-SWITCH-2">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="device-box">
+                    <h2>Máy lọc không khí</h2>
+                    <img src="airfilter_off.png" alt="Hình thiết bị 3 - Tắt" id="IT-OFF-3">
+                    <img src="airfilter_on.png" alt="Hình thiết bị 3 - Bật" id="IT-ON-3" style="display: none;">
+                    <label class="switch">
+                        <input type="checkbox" id="IT-SWITCH-3">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="device-box">
+                    <h2>Quạt</h2>
+                    <img src="fan_off.png" alt="Hình thiết bị 4 - Tắt" id="IT-OFF-4">
+                    <img src="fan_on.png" alt="Hình thiết bị 4 - Bật" id="IT-ON-4" style="display: none;">
+                    <label class="switch">
+                        <input type="checkbox" id="IT-SWITCH-4">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>    
+
+    <div class="navbar" id="Marketingroom">
+        <div class="grid">
+            <div class="item" style="margin: 20px;">
+                <h1>CẢM BIẾN</h1>
+                <div class="clearfix al-center">
+                    <div class="boxview" id="Marketing-tempCard" style="cursor: pointer; ">
+                        <h3>Nhiệt độ</h3>
+                        <img id="Marketing-Temp-img-1" src="nhietdo.png">
+                        <p id="Marketing-Temp-1"></p>
+                    </div>
+
+                    <div class="boxview" id="Marketing-humidityCard" style="cursor: pointer; ">
+                        <h3>Độ ẩm</h3>
+                        <img id="Marketing-Humi-img-1" src="doam.png">
+                        <p id="Marketing-Humi-1"></p>
+                    </div>
+
+                    <div class="boxview" id="Marketing-dustCard" style="cursor: pointer; ">
+                        <h3>Bụi mịn</h3>
+                        <img id="Marketing-Dust-img-1" src="buimin.png">
+                        <p id="Marketing-Dust-1"></p>
+                    </div>
+
+                    <div class="boxview" id="Marketing-co2Card" style="cursor: pointer; ">
+                        <h3>Khí CO2</h3>
+                        <img id="Marketing-CO2-img-1" src="co2.png">
+                        <p id="Marketing-CO2-1"></p>
+                    </div>
+                </div>
+            </div>
+
+                <div class="item">
+                    <h1>BIỂU ĐỒ</h1>
+                    <div class="charts">
+                        <div class="Marketing-chart-wrapper" id="Marketing-tempChartContainer" style="display: none;">
+                            <canvas id="Marketing-tempChart"></canvas>
+                        </div>
+                        <div class="Marketing-chart-wrapper" id="Marketing-humiChartContainer" style="display: none;">
+                            <canvas id="Marketing-humiChart"></canvas>
+                        </div>
+                        <div class="Marketing-chart-wrapper" id="Marketing-co2ChartContainer" style="display: none;">
+                            <canvas id="Marketing-co2Chart"></canvas>
+                        </div>
+                        <div class="Marketing-chart-wrapper" id="Marketing-dustChartContainer" style="display: none;">
+                            <canvas id="Marketing-dustChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="grid item" style="grid-template-columns: 1fr;">
+            <h1>THIẾT BỊ</h1>
+            <div class="al-center">
+                <div class="device-box">
+                    <h2>Máy lạnh</h2>
+                    <img src="aircond_off.png" alt="Hình thiết bị 1 - Tắt" id="Marketing-OFF-1">
+                    <img src="aircond_on.png" alt="Hình thiết bị 1 - Bật" id="Marketing-ON-1" style="display: none;">
+                    <label class="switch">
+                        <input type="checkbox" id="Marketing-SWITCH-1">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="device-box">
+                    <h2>Đèn</h2>
+                    <img src="light_off.png" alt="Hình thiết bị 2 - Tắt" id="Marketing-OFF-2">
+                    <img src="light_on.png" alt="Hình thiết bị 2 - Bật" id="Marketing-ON-2" style="display: none;">
+                    <label class="switch">
+                        <input type="checkbox" id="Marketing-SWITCH-2">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="device-box">
+                    <h2>Máy lọc không khí</h2>
+                    <img src="airfilter_off.png" alt="Hình thiết bị 3 - Tắt" id="Marketing-OFF-3">
+                    <img src="airfilter_on.png" alt="Hình thiết bị 3 - Bật" id="Marketing-ON-3" style="display: none;">
+                    <label class="switch">
+                        <input type="checkbox" id="Marketing-SWITCH-3">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="device-box">
+                    <h2>Quạt</h2>
+                    <img src="fan_off.png" alt="Hình thiết bị 4 - Tắt" id="Marketing-OFF-4">
+                    <img src="fan_on.png" alt="Hình thiết bị 4 - Bật" id="Marketing-ON-4" style="display: none;">
+                    <label class="switch">
+                        <input type="checkbox" id="Marketing-SWITCH-4">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="navbar" id="Information" style="display: none;">
+            <h1 style="color: #4CAF50;">THÔNG TIN THÀNH VIÊN</h1>
+            <div class="info">
+                <div class="author-card">
+                    <img src="loc.jpg" alt="AVT img" class="author-image">
+                    <h2>Võ Xuân Lộc</h2>
+                    <p><strong>MSSV:</strong> 22139040</p>
+                    <p><strong>Ngày sinh:</strong> 29/08/2004</p>
+                    <div class="contact-info">
+                        <p><strong>Email:</strong> <a href="mailto:xuanloc290804@gmail.com" style="color: blue;">xuanloc290804@gmail.com</a></p>
+                        <p><strong>Điện thoại:</strong> 0979 400 237</p>
+                    </div>
+                </div>
+
+                <div class="author-card">
+                    <img src="ngan.jpg" alt="AVT img" class="author-image">
+                    <h2>Nguyễn Hoàng Ngân</h2>
+                    <p><strong>MSSV:</strong> 22139045</p>
+                    <p><strong>Ngày sinh:</strong> 23/01/2004</p>
+                    <div class="contact-info">
+                        <p><strong>Email:</strong> <a href="mailto:ngan.vani2301@gmail.com" style="color: blue;">ngan.vani2301@gmail.com</a></p>
+                        <p><strong>Điện thoại:</strong> 0971 779 478</p>
+                    </div>
+                </div>
+
+                <div class="author-card">
+                    <img src="khang.jpg" alt="AVT img" class="author-image">
+                    <h2>Đào Vĩnh Khang </h2>
+                    <p><strong>MSSV:</strong> 22139030</p>
+                    <p><strong>Ngày sinh:</strong> 05/09/2004</p>
+                    <div class="contact-info">
+                        <p><strong>Email:</strong> <a href="mailto:daovinhkhang010104@gmail.com" style="color: blue;">daovinhkhang010104@gmail.com</a></p>
+                        <p><strong>Điện thoại:</strong> 0378 839 666</p>
+                    </div>
+                </div>               
+            </div>
+        <footer>
+            <p>Hotline: <a href="tel:0979400237">0979400237</a></p>
+            <p>Gmail: <a href="https://www.facebook.com/hoang.ngan2301">NHOM3AE</a></p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+     <!-- Firebase SDK -->
+     <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-app.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-database.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-analytics.js"></script> 
+     <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBjr663egDJq-MsmceX2LFKISHUkyHuvJk",
+            authDomain: "smart-city-210ce.firebaseapp.com",
+            databaseURL: "https://smart-city-210ce-default-rtdb.firebaseio.com",
+            projectId: "smart-city-210ce",
+            storageBucket: "smart-city-210ce.appspot.com",
+            essagingSenderId: "563890382208",
+            appId: "1:563890382208:web:40e5094ecd4e989af88d65",
+            measurementId: "G-L00CQ7VVZM"
+        };
+        // initialize Firebase 
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+    </script> 
+    <script>
+        var nhietdo = document.getElementById('HR-Temp-1');
+        var dbRef1 = firebase.database().ref("HRroom").child("nhietdo");
+        var doam = document.getElementById('HR-Humi-1');
+        var dbRef2 = firebase.database().ref("HRroom").child("doam");
+        var buimin = document.getElementById('HR-Dust-1');
+        var dbRef3 = firebase.database().ref("HRroom").child("buimin");
+        var khico2 = document.getElementById('HR-CO2-1');
+        var dbRef4 = firebase.database().ref("HRroom").child("khico2");
+
+        var nhietdo1 = document.getElementById('IT-Temp-1');
+        var dbRef5 = firebase.database().ref("ITroom").child("nhietdo");
+        var doam1 = document.getElementById('IT-Humi-1');
+        var dbRef6 = firebase.database().ref("ITroom").child("doam");
+        var buimin1 = document.getElementById('IT-Dust-1');
+        var dbRef7 = firebase.database().ref("ITroom").child("buimin");
+        var khico21 = document.getElementById('IT-CO2-1');
+        var dbRef8 = firebase.database().ref("ITroom").child("khico2");
+
+        var nhietdo2 = document.getElementById('Marketing-Temp-1');
+        var dbRef9 = firebase.database().ref("Marketingroom").child("nhietdo");
+        var doam2 = document.getElementById('Marketing-Humi-1');
+        var dbRef10 = firebase.database().ref("Marketingroom").child("doam");
+        var buimin2 = document.getElementById('Marketing-Dust-1');
+        var dbRef11 = firebase.database().ref("Marketingroom").child("buimin");
+        var khico22 = document.getElementById('Marketing-CO2-1');
+        var dbRef12 = firebase.database().ref("Marketingroom").child("khico2");
+
+       
+        
+        dbRef1.on("value", (snap) => {
+    if (snap.exists()) {
+        nhietdo.innerHTML = snap.val() + "°C"; // Nhiệt độ
+    } else {
+        nhietdo.innerHTML = "N/A";
+    }
+});
+
+dbRef2.on("value", (snap) => {
+    if (snap.exists()) {
+        doam.innerHTML = snap.val() + "%"; // Độ ẩm
+    } else {
+        doam.innerHTML = "N/A";
+    }
+});
+
+dbRef3.on("value", (snap) => {
+    if (snap.exists()) {
+        buimin.innerHTML = snap.val() + "µg/m³"; // Bụi mịn
+    } else {
+        buimin.innerHTML = "N/A";
+    }
+});
+
+dbRef4.on("value", (snap) => {
+    if (snap.exists()) {
+        khico2.innerHTML = snap.val() + "ppm"; // CO2
+    } else {
+        khico2.innerHTML = "N/A";
+    }
+});
+
+dbRef5.on("value", (snap) => {
+    if (snap.exists()) {
+        nhietdo1.innerHTML = snap.val() + "°C"; // Nhiệt độ
+    } else {
+        nhietdo1.innerHTML = "N/A";
+    }
+});
+
+dbRef6.on("value", (snap) => {
+    if (snap.exists()) {
+        doam1.innerHTML = snap.val() + "%"; // Độ ẩm
+    } else {
+        doam1.innerHTML = "N/A";
+    }
+});
+
+dbRef7.on("value", (snap) => {
+    if (snap.exists()) {
+        buimin1.innerHTML = snap.val() + "µg/m³"; // Bụi mịn
+    } else {
+        buimin1.innerHTML = "N/A";
+    }
+});
+
+dbRef8.on("value", (snap) => {
+    if (snap.exists()) {
+        khico21.innerHTML = snap.val() + "ppm"; // CO2
+    } else {
+        khico21.innerHTML = "N/A";
+    }
+});
+
+dbRef9.on("value", (snap) => {
+    if (snap.exists()) {
+        nhietdo2.innerHTML = snap.val() + "°C"; // Nhiệt độ
+    } else {
+        nhietdo2.innerHTML = "N/A";
+    }
+});
+
+dbRef10.on("value", (snap) => {
+    if (snap.exists()) {
+        doam2.innerHTML = snap.val() + "%"; // Độ ẩm
+    } else {
+        doam2.innerHTML = "N/A";
+    }
+});
+
+dbRef11.on("value", (snap) => {
+    if (snap.exists()) {
+        buimin2.innerHTML = snap.val() + "µg/m³"; // Bụi mịn
+    } else {
+        buimin2.innerHTML = "N/A";
+    }
+});
+
+dbRef12.on("value", (snap) => {
+    if (snap.exists()) {
+        khico22.innerHTML = snap.val() + "ppm"; // CO2
+    } else {
+        khico22.innerHTML = "N/A";
+    }
+});
+</script>
+</body>
+</html>

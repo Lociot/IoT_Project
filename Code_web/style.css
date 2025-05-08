@@ -1,0 +1,428 @@
+* {
+    box-sizing: border-box;
+}
+
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+p {
+    margin: 5px 0;
+    line-height: 25px;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.header {
+    background-image: url('nenheader.png');
+    background-size: cover;/*Phóng to hoặc thu nhỏ hình nền để phủ toàn bộ kích thước của phần tử, không để lại khoảng trống và không thay đổi tỉ lệ.*/
+    background-position: center; 
+    height: 80px; /*Đặt chiều cao của phần tử là 100 pixel.*/
+    display: flex;/*Sử dụng Flexbox cho phần tử, giúp dễ dàng căn giữa nội dung con theo hàng ngang và dọc.*/
+    align-items: center;/*Căn giữa các phần tử con theo chiều dọc bên trong khung chứa có display: flex.*/
+    width: 100%;
+    z-index: 1000;
+    position: fixed;/*Giữ phần tử cố định ở một vị trí cụ thể trên màn hình khi người dùng cuộn trang (phần tử sẽ không di chuyển).*/
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 0 20px;
+}
+.header img { /* hình nền logo */
+    height: 80px; 
+    margin-right: 10px;
+}
+.header p {
+    margin: 0;
+    font-size: 36px; 
+    font-weight: bold;
+    color: #ffffff;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.toggle-btn {
+    font-size: 24px;
+    cursor: pointer;
+    background-color: transparent;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin-right: 20px;
+}
+.sidebar {
+    height: calc(100vh - 50px); /* Trừ đi chiều cao của header */
+    width: 220px;
+    background-color: #333;
+    display: flex;
+    flex-direction: column; /*Sắp xếp các phần tử con của .sidebar theo chiều dọc (cột).*/
+    align-items: center;
+    position: fixed;
+    top: 80px; 
+    transition: width 0.3s;
+    z-index: 1000;
+}
+
+.sidebar a {
+    width: 100%;
+    padding: 15px 20px;
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    white-space: nowrap;
+}
+
+.sidebar a i {
+    margin-right: 10px;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    background-color: #747474;
+}
+
+.sidebar a.active {
+    background-color: #747474;
+}
+
+.sidebar.collapsed {
+    width: 60px;
+    overflow: hidden;
+}
+
+.sidebar.collapsed i {
+    margin-right: 50px;
+    transition: 0.3s
+}
+
+.content.collapsed {
+    margin-left: 60px;
+}
+.content {
+    margin-left: 220px;
+    flex-grow: 1;
+    margin-top: 80px;
+    transition: margin-left 0.3s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; 
+}
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 20px;
+}
+
+.flex {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+
+.item h1 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #4CAF50;
+}
+.al-center {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+/* Home */
+.home-background {
+    position: relative;
+    text-align: center;
+    background-image: url('nen.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 705px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.53);
+
+}
+.background-overlay {
+    background-color: rgba(0, 0, 0, 0.6);
+    margin: 0;
+    padding: 20px;
+    border-radius: 8px;
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    margin-top: 100px;
+}
+.background-overlay h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: #03c209;
+    text-align: center; 
+    white-space: nowrap;
+}
+.background-overlay p {
+    font-size: 18px;
+    color: #fff;
+    line-height: 1.5;
+    text-align: center; 
+    white-space: nowrap;
+}
+/*cảm biến */
+.boxview {
+    float: left;
+    height: 120px;
+    width: 100%;
+    padding: 0px 25px;
+    border: 1px #2828282d solid;
+    box-shadow: 0 4px 10px rgb(0, 0, 0);
+    border-radius: 8px;
+    position: relative;
+    max-width: 280px;
+    min-width: 200px
+}
+
+.boxview img {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    height: 80px;
+}
+
+.boxview h3 {
+    margin: 0;
+    font-size: 23px;
+    padding: 15px 0 10px 0;
+}
+
+.boxview p {
+    display: inline;
+    font-size: 25px;
+    font-weight: 500;
+    margin: 0;
+    padding: 0;
+    color: #05512b;
+    text-shadow: 0 4px 8px rgba(46, 48, 46, 0.332);
+}
+
+.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+#HRroom .boxview,
+#ITroom .boxview,
+#Marketingroom .boxview {
+    width: 45%;
+    margin: 0 8px 15px 8px;
+}
+
+canvas {
+    width: 95% !important;
+    height: 300px;
+}
+
+.device-box {
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    width: 250px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px;
+    transition: 0.3s;
+}
+
+.device-box:hover {
+    transform: scale(1.03); 
+    box-shadow: 0 4px 8px rgba(0, 255, 85, 0.332);
+    border: 2px solid #00ff5e;
+}
+
+.device-box img {
+    width: 120px;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.device-box h2 {
+    font-size: 20px; 
+    margin: 0;
+    color: #1b1c1b; 
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    margin-top: 10px;
+}
+
+/* Ẩn input checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider { /* Thanh trượt */
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc; 
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+/* Hình tròn trên thanh trượt */
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+/* Khi checkbox được chọn (ON) */
+input:checked + .slider {
+    background-color: #4CAF50; 
+}
+
+/* Di chuyển hình tròn khi bật */
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+
+
+
+
+
+
+/* Information */
+#Information {
+    margin: 20px auto;
+    width: 100%; 
+  
+}
+
+#Information h1 {
+    text-align: center;
+    color: #2E7D32; 
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.author-card {
+    background-color: #FFFFFF; 
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); 
+    padding: 20px;
+    margin: 15px;
+    flex: 1;
+    width: 30%; 
+    text-align: center;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.author-card:hover {
+    background-color: #E0F2F1; 
+    transform: scale(1.05); 
+}
+
+.author-card h2 {
+    color: #2E7D32; 
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.author-card p {
+    font-size: 16px;
+    margin: 8px 0;
+    color: #333333; 
+}
+
+.contact-info a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #4CAF50; 
+    transition: color 0.3s ease;
+}
+
+.contact-info a:hover {
+    color: #2E7D32; 
+    text-decoration: underline;
+}
+
+.author-image {
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    margin-bottom: 15px;
+    border: 3px solid #4CAF50; 
+}
+
+/* Footer */
+footer {
+    background-color: #e0e0e0;
+    padding: 10px;
+    text-align: center;
+}
+
+footer p {
+    margin: 0;
+    font-size: 14px;
+}
+
+footer a {
+    color: #04AA6D;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
